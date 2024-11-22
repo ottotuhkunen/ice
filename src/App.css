@@ -1,0 +1,81 @@
+.App {
+  text-align: center;
+}
+
+.main-container {
+  background-color: #011328;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.main-container > section {
+  width: 100%;
+  max-width: 700px;
+  box-sizing: border-box;
+  text-align: center;
+  user-select: none;
+  margin-top: 4px;
+}
+
+html, body, * {
+  scrollbar-width: thin !important; /* For Firefox */
+  scrollbar-color: #555 #1a1a1a !important;
+}
+
+*::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+*::-webkit-scrollbar-track {
+  background: #1a1a1a !important;
+  border-radius: 4px !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #2d1b1b !important;
+  border-radius: 4px !important;
+  transition: background-color 0.3s ease !important;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #888 !important;
+}
+
+.atc-treatment-menu-content {
+  border: none;
+  margin-bottom: 4px;
+  width: 100%;
+  text-align: left;
+}
+
+.atc-stand-menu-content {
+  border: none;
+  margin: 4px;
+  width: 44px;
+  text-align: center;
+}
+
+.password-field {
+  margin-top: 0px;
+}
+
+.password-field input {
+  margin-right: 10px;
+  padding: 0px;
+}
+
+.password-field button {
+  background-color: #6c757d;
+  color: white;
+  cursor: pointer;
+  border: none;
+  width: 100px;
+  
+}
+
+.password-field button:hover {
+  opacity: 0.8;
+}
