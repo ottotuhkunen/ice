@@ -1,15 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
 import fluidLimits from '../utils/fluidLimits.json';
-import { LOGOUT_URL, AIRCRAFT_DATA_URL, UPDATE_DATA_URL } from '../utils/data';
+import { LOGOUT_URL, AIRCRAFT_DATA_URL, UPDATE_DATA_URL, SET_AREA_URL, GET_AREA_URL, WEBSOCKET_URL } from '../utils/data';
 import {
   MenuSection, AircraftContainer, Callsign, InfoBlock,
   TreatmentDisplay, ManualButton, StandMenu, TreatmentMenu,
   ConfirmButton, FunctionButton, MainSection, CloseButton,
-  StandDisplay, EndReportMenu, CompletedMark, EOBT
+  StandDisplay, EndReportMenu, CompletedMark, EOBT, Title,
+  MenuTitle
 } from '../styles/ATCViewStyles';
 import {
   ModalBackground, ModalContent, ModalTitle, ModalButton
 } from './TopMenu';
+import { Helmet } from 'react-helmet';
+import warningSound from '../utils/notification.mp3'; 
+import Aircraft from './ATCAircraft'
 
 const treatmentOptions = [
   'No Treatment Requested',
@@ -18,7 +22,7 @@ const treatmentOptions = [
   'Wings & Stab. Type I',
   'Full A/C Type I & Type IV',
   'Full A/C Type I, Wings & Stab. Type IV',
-  'Wings & Stab. Type 1 & Type IV',
+  'Wings & Stab. Type I & Type IV',
 ];
 
 const standOptions = [
@@ -132,9 +136,88 @@ const ATCView = ({ user }) => {
   const [isPasswordFieldVisible, setPasswordFieldVisible] = useState(false);
   const [password, setPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const [selectedApron, setSelectedApron] = useState("AP6");
+
+  console.log(selectedApron);
 
   const treatmentMenuRef = useRef();
   const standMenuRef = useRef();
+
+  const prevAircraftDataRef = useRef([]);
+  const audio = new Audio(warningSound);
+
+  useEffect(() => {
+    fetch(GET_AREA_URL)
+    .then((response) => response.json())
+    .then((data) => {
+      setSelectedApron(data.selectedArea);
+    });
+  }, []);
+
+  const fetchAndUpdateData = async () => {
+    console.log('Updating data');
+    try {
+      const response = await fetch(AIRCRAFT_DATA_URL);
+      const data = await response.json();
+
+      // Filter aircraft within 3 NM of Helsinki Airport
+      const filteredData = data.filter((aircraft) => {
+        const { lat, lon } = aircraft;
+        const distance = calculateDistanceNM(lat, lon, HELSINKI_COORDS.lat, HELSINKI_COORDS.lon);
+        return distance <= 3; // Include only aircraft within 3 NM
+      });
+  
+      // Sort data by EOBT
+      const sortedData = [...filteredData].sort((a, b) => a.EOBT.localeCompare(b.EOBT));
+  
+      // Update state only if there are changes
+      setAircraftData((prevData) => {
+        if (JSON.stringify(prevData) !== JSON.stringify(sortedData)) {
+          return sortedData;
+        }
+        return prevData; // Prevent unnecessary renders
+      });
+    } catch (error) {
+      console.error('Error fetching aircraft data:', error);
+    }
+  };
+
+  const saveSelectedApron = async (apron) => {
+    try {
+      setSelectedApron(apron);
+      const response = await fetch(SET_AREA_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ area: apron }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to save apron selection');
+      }
+      console.log('Apron selection saved');
+    } catch (error) {
+      console.error('Error saving apron selection:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Check for new aircraft with requestStatus === 1 that wasn't in that state before
+    const newRequests = aircraftData.filter((aircraft) => {
+      const prevAircraft = prevAircraftDataRef.current.find((a) => a.cid === aircraft.cid);
+      return aircraft.requestStatus === 1 && (!prevAircraft || prevAircraft.requestStatus !== 1);
+    });
+
+    if (newRequests.length > 0 && audioEnabled) {
+      audio.play().catch((err) => console.error('Audio playback failed:', err));
+    }
+
+    // Update the previous aircraft data with the current data
+    prevAircraftDataRef.current = aircraftData;
+
+  }, [aircraftData, audioEnabled]);
 
   const handleLogout = async () => {
     try {
@@ -152,16 +235,7 @@ const ATCView = ({ user }) => {
       console.error('Error during logout:', error);
     }
   };
-
-  const fetchAircraftData = () => {
-    fetch(AIRCRAFT_DATA_URL)
-      .then((response) => response.json())
-      .then((data) => {
-        const sortedData = [...data].sort((a, b) => a.EOBT.localeCompare(b.EOBT));
-        setAircraftData(sortedData);
-      });
-  };
-
+  
   const handleUpdate = (callsign, field, value) => {
     setUpdatedData((prev) => ({
       ...prev,
@@ -398,9 +472,6 @@ const ATCView = ({ user }) => {
           requestStatus: 2,
         }),
       });
-      if (response.ok) {
-        fetchAircraftData();
-      }
     } else if (aircraft.requestStatus === 2) {
       const response = await fetch(UPDATE_DATA_URL, {
         method: 'POST',
@@ -413,9 +484,6 @@ const ATCView = ({ user }) => {
           guidanceInfo: 1,
         }),
       });
-      if (response.ok) {
-        fetchAircraftData();
-      }
     } else if (aircraft.requestStatus === 3) {
       const response = await fetch(UPDATE_DATA_URL, {
         method: 'POST',
@@ -429,9 +497,6 @@ const ATCView = ({ user }) => {
           HOTStartTime: new Date().toISOString().slice(11, 16),
         }),
       });
-      if (response.ok) {
-        fetchAircraftData();
-      }
     } else if (aircraft.requestStatus === 4) {
       const response = await fetch(UPDATE_DATA_URL, {
         method: 'POST',
@@ -447,10 +512,6 @@ const ATCView = ({ user }) => {
       });
       setSelectedAircraft(aircraft);
       setEndReportMenuOpen(true);
-      
-      if (response.ok) {
-        fetchAircraftData();
-      }
     } else if (aircraft.requestStatus === 5) {
       setSelectedAircraft(aircraft);
       setEndReportMenuOpen(true);
@@ -485,37 +546,34 @@ const ATCView = ({ user }) => {
   };
 
   useEffect(() => {
-    const fetchAndUpdateData = async () => {
-      try {
-        const response = await fetch(AIRCRAFT_DATA_URL);
-        const data = await response.json();
-
-        // Filter aircraft within 3 NM of Helsinki Airport
-        const filteredData = data.filter((aircraft) => {
-          const { lat, lon } = aircraft;
-          const distance = calculateDistanceNM(lat, lon, HELSINKI_COORDS.lat, HELSINKI_COORDS.lon);
-          return distance <= 3; // Include only aircraft within 3 NM
-        });
-
-        // Sort data by EOBT
-        const sortedData = [...filteredData].sort((a, b) => a.EOBT.localeCompare(b.EOBT));
-
-        // Update state only if there are changes
-        setAircraftData((prevData) => {
-          if (JSON.stringify(prevData) !== JSON.stringify(sortedData)) {
-            return sortedData;
-          }
-          return prevData; // Prevent unnecessary renders
-        });
-      } catch (error) {
-        console.error('Error fetching aircraft data:', error);
+    fetchAndUpdateData(); // Initial fetch
+  
+    // Connect to WebSocket
+    const socket = new WebSocket(WEBSOCKET_URL);
+  
+    socket.onopen = () => {
+      console.log('WebSocket connected');
+    };
+  
+    socket.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      if (msg.type === 'aircraft-updated') {
+        console.log('Aircraft update received:', msg.callsign);
+        fetchAndUpdateData(); // Trigger update immediately
       }
     };
   
-    fetchAndUpdateData(); // Initial fetch
-    const interval = setInterval(fetchAndUpdateData, 8000);
+    socket.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
   
-    return () => clearInterval(interval); // Cleanup on unmount
+    // Optional fallback polling every 60s (for resilience)
+    const fallbackInterval = setInterval(fetchAndUpdateData, 60000);
+  
+    return () => {
+      socket.close();
+      clearInterval(fallbackInterval);
+    };
   }, []);  
 
   useEffect(() => {
@@ -531,24 +589,47 @@ const ATCView = ({ user }) => {
       }
     };
   
-    // Add event listener for outside clicks
     document.addEventListener('mousedown', handleClickOutside);
   
-    // Cleanup the event listener on component unmount
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []); // Empty dependency array means this runs once when the component mounts
+  }, []);
 
   const onStandAircraft = aircraftData.filter((aircraft) => aircraft.requestStatus === 0);
-  const deiceRequestedAircraft = aircraftData.filter((aircraft) => aircraft.requestStatus > 0);
-  
+  const deiceRequestedAircraft = aircraftData.filter(
+    (aircraft) =>
+      (aircraft.requestStatus === 1 || aircraft.requestStatus === 2) &&
+      aircraft.isInRange === false
+  );
+  const deiceApronAircraft = aircraftData.filter((aircraft) =>
+    (aircraft.requestStatus === 3 || aircraft.requestStatus === 4) ||
+    (aircraft.requestStatus >= 2 && aircraft.isInRange === true)
+  );
 
   return (
+    <>
+    <Helmet>
+      <meta name="viewport" content="width=device-width, initial-scale=0.6" />
+    </Helmet>
+    <div class="overlay">
+      <div class="overlay-text">Preparing for the next season</div>
+    </div>
     <div className="main-container">
       <MenuSection>
-        <h3>EFHK Deicing Operations</h3>
-          {isPasswordFieldVisible && (
+        <a href="https://vatsim-scandinavia.org/" target="_blank" rel="noopener noreferrer">
+          <img src="images/vatsca.svg" alt="Vatsca" style={{width: '86px', marginTop: '2px'}}/>
+        </a>
+        <Title style={{ fontSize: '1rem', fontWeight: '600' }}>
+          EFHK DEICE
+          <select className='apron-selector' value={selectedApron} onChange={(e) => saveSelectedApron(e.target.value)}>
+            <option value="AP6">AP6</option>
+            <option value="AP8">AP8</option>
+          </select>
+        </Title>
+
+
+        {isPasswordFieldVisible && (
           <div className="password-field">
             <label htmlFor="service-password"></label>
             <input
@@ -562,349 +643,154 @@ const ATCView = ({ user }) => {
           </div>
           )}
           <div>
-            <img onClick={() => setShowModal(true)} style={{ marginRight: '10px', width: '28px' }} src="images/logout.svg" alt="Logout" />
+                  
             <a href="https://wiki.vatsim-scandinavia.org/books/special-procedures/page/efhk-de-icing" target="_blank" rel="noopener noreferrer">
-              <img style={{ marginRight: '14px' }} src="images/files.svg" alt="Files" />
+              <img style={{ marginRight: '12px', width: '22px' }} src="images/files.svg" alt="Files" />
             </a>
+            <img
+              src={audioEnabled ? 'images/speaker-on.svg' : 'images/speaker-off.svg'}
+              alt="Audio"
+              style={{ marginRight: '10px', width: '22px' }}
+              onClick={() => setAudioEnabled((prev) => !prev)}
+            />
             <img
               src={password ? "images/acars-on.svg" : "images/acars-off.svg"}
               alt="ACARS"
               onClick={handleHoppieClick}
+              style={{ marginRight: '10px', width: '22px' }}
             />
+            <img onClick={() => setShowModal(true)} style={{ width: '24px' }} src="images/logout.svg" alt="Logout" />
           </div>
       </MenuSection>
 
       <MainSection>
-
-      <div className="column" id="on-stand-column">
-          <h3>ON STAND</h3>
-
-          {onStandAircraft.map((aircraft) => (
-            <AircraftContainer key={aircraft.callsign}>
-              <Callsign style={{ color: aircraft.lat === 60.30323 ? 'gray' : 'inherit' }}>
-                {aircraft.callsign}
-                <InfoBlock>
-                  <p style={{ fontSize: '9pt', color: 'silver', marginBottom: '0' }}>{aircraft.ATYP}</p>
-                  <p style={{ fontSize: '9pt', color: 'silver', marginBottom: '0' }}>{aircraft.REG}</p> 
-                </InfoBlock>
-              </Callsign>
-
-              <TreatmentDisplay>
-                {treatmentOptions[aircraft.selectedTreatment]}
-                <ManualButton
-                  onClick={() =>
-                    setActiveTreatmentMenu(
-                      activeTreatmentMenu === aircraft.callsign ? null : aircraft.callsign
-                    )
-                  }
-                >
-                  Manual Selection
-                </ManualButton>
-                <EOBT>EOBT {aircraft.EOBT}</EOBT> 
-                {activeTreatmentMenu === aircraft.callsign && (
-                  <TreatmentMenu ref={treatmentMenuRef}>
-                    {treatmentOptions.map((option, index) => (
-                      <div key={index}>
-                        <button
-                          onClick={() =>
-                            handleUpdate(aircraft.callsign, 'selectedTreatment', index)
-                          }
-                          className='atc-treatment-menu-content'
-                          style={{
-                            backgroundColor:
-                              updatedData[`${aircraft.callsign}_selectedTreatment`] === index
-                                ? 'cyan'
-                                : '',
-                          }}
-                        >
-                          {option}
-                        </button>
-                      </div>
-                    ))}
-                    <p style={{marginTop: '10px', marginBottom: '0'}}>Do not 'Confirm Treatment' before pilot approval!</p>
-                    <p>The action may trigger an ACARS message to A/C</p>
-                    <CloseButton onClick={closeMenus}>
-                      Close
-                    </CloseButton>
-                    <ConfirmButton
-                      onClick={() => {
-                        saveTreatmentChanges(aircraft.callsign, user.cid);
-                        closeMenus();
-                      }}
-                      disabled={isSending}
-                    >
-                      {isSending ? 'Saving...' : 'Confirm Treatment'}
-                    </ConfirmButton>
-                  </TreatmentMenu>
-                )}
-              </TreatmentDisplay>
-
-              <StandDisplay>
-                {aircraft.stand !== '' ? aircraft.stand : 'NIL'}
-                <ManualButton
-                  onClick={() =>
-                    setActiveStandMenu(
-                      activeStandMenu === aircraft.callsign ? null : aircraft.callsign
-                    )
-                  }
-                >
-                  Select Stand
-                </ManualButton>
-                {activeStandMenu === aircraft.callsign && (
-                  <StandMenu ref={standMenuRef}>
-                    {standOptions.map((line, idx) => (
-                      <div key={idx}>
-                        {line.map((stand) => (
-                          <button
-                            key={stand}
-                            onClick={() =>
-                              handleUpdate(aircraft.callsign, 'stand', stand)
-                            }
-                            className='atc-stand-menu-content'
-                            style={{
-                              backgroundColor:
-                                updatedData[`${aircraft.callsign}_stand`] === stand
-                                  ? 'cyan'
-                                  : '',
-                            }}
-                          >
-                            {stand}
-                          </button>
-                        ))}
-                      </div>
-                    ))}
-                    <CloseButton onClick={closeMenus}>
-                      Close
-                    </CloseButton>
-                    <ConfirmButton
-                      onClick={() => {
-                        saveStandChanges(aircraft.callsign, user.cid);
-                        closeMenus();
-                      }}
-                      disabled={isSending}
-                    >
-                      {isSending ? 'Saving...' : 'Confirm Stand'}
-                    </ConfirmButton>
-                  </StandMenu>
-                )}
-              </StandDisplay>
-
-              <FunctionButton
-                style={{
-                  backgroundColor:
-                    aircraft.requestStatus === 1
-                      ? 'orange'
-                      : aircraft.requestStatus === 3
-                      ? 'green'
-                      : aircraft.requestStatus === 4
-                      ? 'darkred'
-                      : '',
-                  pointerEvents: aircraft.requestStatus === 0 ? 'none' : 'auto',
-                }}
-                onClick={() => handleFunctionButtonClick(aircraft)}
-                disabled={aircraft.requestStatus === 0}
-              >
-                {aircraft.requestStatus === 0
-                  ? 'NIL'
-                  : aircraft.requestStatus === 1
-                  ? <>CONFIRM<br/>REQUEST</>
-                  : 'NIL'}
-              </FunctionButton>
-            </AircraftContainer>
-          ))}
+        <div className="column-group">
+          <div id="on-stand-column">
+            <h3>ON STAND / NO REQUEST</h3>
+            {onStandAircraft.map((aircraft) => (
+              <Aircraft
+                key={aircraft.callsign}
+                aircraft={aircraft}
+                treatmentOptions={treatmentOptions}
+                standOptions={standOptions}
+                activeTreatmentMenu={activeTreatmentMenu}
+                setActiveTreatmentMenu={setActiveTreatmentMenu}
+                activeStandMenu={activeStandMenu}
+                setActiveStandMenu={setActiveStandMenu}
+                handleUpdate={handleUpdate}
+                updatedData={updatedData}
+                saveTreatmentChanges={saveTreatmentChanges}
+                saveStandChanges={saveStandChanges}
+                isSending={isSending}
+                user={user}
+                treatmentMenuRef={treatmentMenuRef}
+                standMenuRef={standMenuRef}
+                closeMenus={closeMenus}
+                handleFunctionButtonClick={handleFunctionButtonClick}
+                columnType="onStand"
+              />
+            ))}
+          </div>
+          <div id="deice-requested-column">
+            <h3>DEICE REQUEST</h3>
+            {deiceRequestedAircraft.map((aircraft) => (
+              <Aircraft
+                key={aircraft.callsign}
+                aircraft={aircraft}
+                isDeiceRequested={true}
+                treatmentOptions={treatmentOptions}
+                standOptions={standOptions}
+                activeTreatmentMenu={activeTreatmentMenu}
+                setActiveTreatmentMenu={setActiveTreatmentMenu}
+                activeStandMenu={activeStandMenu}
+                setActiveStandMenu={setActiveStandMenu}
+                treatmentMenuRef={treatmentMenuRef}
+                standMenuRef={standMenuRef}
+                handleUpdate={handleUpdate}
+                saveTreatmentChanges={saveTreatmentChanges}
+                saveStandChanges={saveStandChanges}
+                isSending={isSending}
+                updatedData={updatedData}
+                user={user}
+                closeMenus={closeMenus}
+                handleFunctionButtonClick={handleFunctionButtonClick}
+                columnType="deiceRequested"
+              />
+            ))}
+          </div>
         </div>
-        <div className="column" id="deice-requested-column">
-          <h3>DEICE REQUEST</h3>
-
-          {deiceRequestedAircraft.map((aircraft) => (
-            <AircraftContainer key={aircraft.callsign}>
-              <Callsign>
-                {aircraft.callsign}
-                <InfoBlock>
-                  <p style={{ fontSize: '9pt', color: 'silver', marginBottom: '0' }}>{aircraft.ATYP}</p>
-                  <p style={{ fontSize: '9pt', color: 'silver', marginBottom: '0' }}>{aircraft.REG}</p> 
-                </InfoBlock>
-              </Callsign>
-
-              <TreatmentDisplay>
-                <span style={{ color: aircraft.requestStatus > 1 ? '#32d74b' : 'inherit'}}>
-                  {treatmentOptions[aircraft.selectedTreatment]}
-                </span>
-              <ManualButton
-                  onClick={() =>
-                    setActiveTreatmentMenu(
-                      activeTreatmentMenu === aircraft.callsign ? null : aircraft.callsign
-                    )
-                  }
-                >
-                  Manual Selection
-                </ManualButton>
-                <EOBT>EOBT {aircraft.EOBT}</EOBT> 
-                <CompletedMark>
-                  {aircraft.ACARSSent === 1 && (
-                    <img 
-                      src="images/acars-on.svg" 
-                      alt="tick" 
-                      style={{ width: '16px', marginLeft: '-16px' }} 
-                    />
-                  )} 
-                </CompletedMark>
-                <CompletedMark>
-                  {aircraft.requestStatus === 5 && (
-                    <img 
-                      src="images/checkmark-atc.svg" 
-                      alt="tick" 
-                      style={{ width: '16px', marginLeft: '8px' }} 
-                    />
-                  )} 
-                </CompletedMark>
-                {activeTreatmentMenu === aircraft.callsign && (
-                  <TreatmentMenu ref={treatmentMenuRef}>
-                    {treatmentOptions.map((option, index) => (
-                      <div key={index}>
-                        <button
-                          onClick={() =>
-                            handleUpdate(aircraft.callsign, 'selectedTreatment', index)
-                          }
-                          className='atc-treatment-menu-content'
-                          style={{
-                            backgroundColor:
-                              updatedData[`${aircraft.callsign}_selectedTreatment`] === index
-                                ? 'cyan'
-                                : '',
-                          }}
-                        >
-                          {option}
-                        </button>
-                      </div>
-                    ))}
-                    <p style={{marginTop: '10px', marginBottom: '0'}}>Do not 'Confirm Treatment' before pilot approval!</p>
-                    <p>The action may trigger an ACARS message to A/C</p>
-
-                    <CloseButton onClick={closeMenus}>
-                      Close
-                    </CloseButton>
-                    <ConfirmButton
-                      onClick={() => {
-                        saveTreatmentChanges(aircraft.callsign, user.cid);
-                        closeMenus();
-                      }}
-                      disabled={isSending}
-                    >
-                      {isSending ? 'Saving...' : 'Confirm Treatment'}
-                    </ConfirmButton>
-                  </TreatmentMenu>
-                )}
-              </TreatmentDisplay>
-
-              <StandDisplay>
-                {aircraft.stand !== '' ? aircraft.stand : 'NIL'}
-                <ManualButton
-                  onClick={() =>
-                    setActiveStandMenu(
-                      activeStandMenu === aircraft.callsign ? null : aircraft.callsign
-                    )
-                  }
-                >
-                  Select Stand
-                </ManualButton>
-                {activeStandMenu === aircraft.callsign && (
-                  <StandMenu ref={standMenuRef}>
-                    {standOptions.map((line, idx) => (
-                      <div key={idx}>
-                        {line.map((stand) => (
-                          <button
-                            key={stand}
-                            onClick={() =>
-                              handleUpdate(aircraft.callsign, 'stand', stand)
-                            }
-                            className='atc-stand-menu-content'
-                            style={{
-                              backgroundColor:
-                                updatedData[`${aircraft.callsign}_stand`] === stand
-                                  ? 'cyan'
-                                  : '',
-                            }}
-                          >
-                            {stand}
-                          </button>
-                        ))}
-                      </div>
-                    ))}
-                    <CloseButton onClick={closeMenus}>
-                      Close
-                    </CloseButton>
-                    <ConfirmButton
-                      onClick={() => {
-                        saveStandChanges(aircraft.callsign, user.cid);
-                        closeMenus();
-                      }}
-                      disabled={isSending}
-                    >
-                      {isSending ? 'Saving...' : 'Confirm Stand'}
-                    </ConfirmButton>
-                  </StandMenu>
-                )}
-              </StandDisplay>
-
-              <FunctionButton
-                style={{
-                  backgroundColor:
-                    aircraft.requestStatus === 1
-                      ? 'orange'
-                      : aircraft.requestStatus === 3
-                      ? 'green'
-                      : aircraft.requestStatus === 4
-                      ? 'darkred'
-                      : aircraft.requestStatus === 5
-                      ? ''
-                      : '',
-                  pointerEvents: aircraft.requestStatus === 0 ? 'none' : 'auto',
-                }}
-                onClick={() => handleFunctionButtonClick(aircraft)}
-                disabled={aircraft.requestStatus === 0}
-              >
-                {aircraft.requestStatus === 0
-                  ? 'NIL'
-                  : aircraft.requestStatus === 1
-                  ? <>CONFIRM<br/>REQUEST</>
-                  : aircraft.requestStatus === 2
-                  ? <>TAXI TO<br/>{aircraft.stand || 'NIL'}</>
-                  : aircraft.requestStatus === 3
-                  ? <>START<br/>DEICE</>
-                  : aircraft.requestStatus === 4
-                  ? <>MARK AS<br/>COMPLETED</>
-                  : aircraft.requestStatus === 5
-                  ? <>VIEW<br/>END REPORT</>
-                  : 'NIL'}
-              </FunctionButton>
-            </AircraftContainer>
+        <div id="deice-apron-column">
+          <h3 className='deice-apron-title'>
+            <img src='images/slippery.png'></img>
+            <div>
+              <p style={{margin: 0}}>REMOTE DE-ICING | {selectedApron}</p>
+              <p style={{fontWeight: 'normal', fontSize: '9pt', margin: 0}}>De-icing Operator on 121.675</p>
+              <p style={{fontWeight: 'normal', fontSize: '9pt', margin: 0}}>
+                {selectedApron === 'AP6' ? 'Proceed via GC1 or DC1' : 'Proceed via AV1 or VS1'}
+              </p>
+            </div>
+            <div>133.850</div>
+          </h3>
+          {deiceApronAircraft.map((aircraft) => (
+            <Aircraft
+              key={aircraft.callsign}
+              aircraft={aircraft}
+              isDeiceRequested={true}
+              treatmentOptions={treatmentOptions}
+              standOptions={standOptions}
+              activeTreatmentMenu={activeTreatmentMenu}
+              setActiveTreatmentMenu={setActiveTreatmentMenu}
+              activeStandMenu={activeStandMenu}
+              setActiveStandMenu={setActiveStandMenu}
+              treatmentMenuRef={treatmentMenuRef}
+              standMenuRef={standMenuRef}
+              handleUpdate={handleUpdate}
+              saveTreatmentChanges={saveTreatmentChanges}
+              saveStandChanges={saveStandChanges}
+              isSending={isSending}
+              updatedData={updatedData}
+              user={user}
+              closeMenus={closeMenus}
+              handleFunctionButtonClick={handleFunctionButtonClick}
+              columnType="deiceApron"
+            />
           ))}
-
         </div>
       </MainSection>
 
       {endReportMenuOpen && selectedAircraft && (
         <EndReportMenu>
-          <h3>End Report</h3>
-          <p>
-            {selectedAircraft.callsign} 
-            {selectedAircraft.REG && ` (or ${selectedAircraft.REG}) `} 
-            on stand {selectedAircraft.stand || 'N/A'}
-          </p>
-          <p>
-            {endReportTreatment[selectedAircraft.selectedTreatment]} {endReportDilution(selectedAircraft)}
-          </p>
-          <p>
-            Holdover time started at {" "}
-            {new Date(`1970-01-01T${selectedAircraft.HOTStartTime}Z`).toLocaleTimeString("en-GB", {
-              timeZone: "Europe/Helsinki",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}{" "}
-            local time
-          </p>
-          <p style={{marginBottom: '20px'}}>Post de- and anti-icing checks complete</p>
+          <MenuTitle>End Report</MenuTitle>
+          <div className='menu-content-container'>
+            <p>
+              {selectedAircraft.callsign} 
+              {selectedAircraft.REG && ` (or ${selectedAircraft.REG}) `} 
+              on stand {selectedAircraft.stand || 'N/A'}
+            </p>
+            <p>{endReportTreatment[selectedAircraft.selectedTreatment]} {endReportDilution(selectedAircraft)}</p>
+            <p>
+              Holdover time started at{" "}
+              {selectedAircraft.HOTStartTime ? (
+                new Date(
+                  Date.UTC(
+                    new Date().getFullYear(),
+                    new Date().getMonth(),
+                    new Date().getDate(),
+                    ...selectedAircraft.HOTStartTime.split(":").map(Number)
+                  )
+                ).toLocaleTimeString("en-GB", {
+                  timeZone: "Europe/Helsinki",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              ) : (
+                "N/A"
+              )}{" "}
+              local time
+            </p>
+            <p>Post de- and anti-icing checks complete</p>
+          </div>
+
           <CloseButton onClick={closeEndReportMenu}>Close</CloseButton>
         </EndReportMenu>
       )}
@@ -924,6 +810,7 @@ const ATCView = ({ user }) => {
         </ModalBackground>
       )}
     </div>
+    </>
   );
 };
 

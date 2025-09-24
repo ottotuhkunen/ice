@@ -13,12 +13,9 @@ const MenuSection = styled.div`
   position: fixed;
   width: 100%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
-  padding: 0 16px;
-  max-width: 700px;
+  padding: 0 10px;
   left: 50%;
   transform: translateX(-50%);
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
   z-index: 10;
 `;
 
@@ -96,12 +93,8 @@ const TopMenu = ({ callsign }) => {
     <>
       <MenuSection>
         <Text>
-          <a
-            href="https://wiki.vatsim-scandinavia.org/books/finnish-airports-charts/page/de-icing-procedures"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="images/files.svg" alt="Files"/>
+          <a style={{marginRight: '10px', marginLeft: '4px'}} href="https://wiki.vatsim-scandinavia.org/books/finnish-airports-charts/page/de-icing-procedures" target="_blank" rel="noopener noreferrer">
+            <img src="images/files.svg" alt="Files" style={{width: '22px'}}/>
           </a>
         </Text>
         <Callsign>{callsign}</Callsign>

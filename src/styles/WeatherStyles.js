@@ -24,11 +24,11 @@ export const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background-color: #14384c;
+  background-color: #15181d;
   padding: 10px;
   margin-left: 4px;
   border-radius: 4px;
-  max-width: 700px;
+  max-width: 1000px;
 `;
 
 export const DataContainer = styled.div`
@@ -64,7 +64,7 @@ export const Title = styled.p`
 export const Value = styled.h4`
   margin: 0;
   font-size: 0.9em;
-  color: #43c6e7;
+  color: #306ec9;
   font-weight: bold;
 `;
 
@@ -72,7 +72,7 @@ export const Value = styled.h4`
 export const ValueBig = styled.h4`
   margin: 16px 0 0;
   font-size: 1.4em;
-  color: #43c6e7;
+  color: #306ec9;
   font-weight: bold;
 `;
 

@@ -4,6 +4,7 @@ import Aerodrome from './Aerodrome';
 import Weather from './Weather';
 import Request from './Request';
 import Notes from './Notes';
+import Steps from './Steps';
 import { AIRCRAFT_DATA_URL } from '../utils/data';
 
 const PilotView = ({ user }) => {
@@ -15,7 +16,7 @@ const PilotView = ({ user }) => {
   const [requestStatus, setRequestStatus] = useState(0);
   const [selectedTreatment, setSelectedTreatment] = useState(0);
 
-  const [temperature, setTemperature] = useState(0);
+  const [temperature, setTemperature] = useState('--');
   const [precipitation, setPrecipitation] = useState('NIL');
   const [intensity, setIntensity] = useState('NIL');
 
@@ -66,6 +67,7 @@ const PilotView = ({ user }) => {
         callsign={callsign} cid={user.cid} selectedTreatment={selectedTreatment} 
         temperature={temperature} precipitation={precipitation} intensity={intensity} />
       <Notes />
+      <Steps />
     </div>
   );
 };

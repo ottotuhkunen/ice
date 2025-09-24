@@ -19,11 +19,11 @@ export const IconContainer = styled.div`
 
 export const Content = styled.div`
   flex: 1;
-  background-color: #14384c;
+  background-color: #15181d;
   padding: 10px;
   margin-left: 4px;
   border-radius: 4px;
-  max-width: 700px;
+  max-width: 1000px;
 `;
 
 export const StartButton = styled.button`
@@ -48,7 +48,7 @@ export const ProgressWrapper = styled.div`
 
 export const HOTTimer = styled.h4`
   width: 100%;
-  color: #43c6e7;
+  color: #306ec9;
   font-weight: bold;
   margin: 0;
   padding: 0;

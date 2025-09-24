@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Block = styled.section`
-  margin-top: 54px !important;
+  margin-top: 60px !important;
 `;
 
 const Container = styled.div`
@@ -25,15 +25,14 @@ const Content = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #14384c;
+  background-color: #15181d;
   padding-left: 16px;
   margin-left: 4px;
   border-radius: 4px;
-  max-width: 700px;
 `;
 
 const IcaoCode = styled.h3`
-  color: #43c6e7;
+  color: #306ec9;
   font-weight: bold;
   margin: 0;
   font-size: 1.4em;

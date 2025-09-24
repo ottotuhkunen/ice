@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 
 import {
   Block, Container, IconContainer, Content, Value,
@@ -67,7 +66,7 @@ const Weather = ({ temperature, precipitation, intensity }) => {
         <Content>
           <AdditionalDataContainer>
             <Title>METAR Timestamp: </Title>
-            <Value style={{ color: isLate ? 'red' : '#43c6e7' }}>{timestamp}Z</Value>
+            <Value style={{ color: isLate ? 'red' : '#306ec9' }}>{timestamp}Z</Value>
           </AdditionalDataContainer>
           <AdditionalDataContainer>
             <Value>{metarData}</Value>

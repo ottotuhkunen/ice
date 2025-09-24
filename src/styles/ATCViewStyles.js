@@ -10,61 +10,120 @@ export const MenuSection = styled.div`
   user-select: none;
   position: fixed;
   width: 100%;
-  height: 60px;
+  height: 42px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
-  padding: 12px;
+  padding: 8px;
   z-index: 10;
 
   img {
     cursor: pointer;
   }
-
-  h3 {
-    margin: 0;
-  }
 `;
 
 export const MainSection = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  margin-top: 42px;
+  bottom: 0;
+  width: 100%;
+  height: calc(100vh - 42px);
+  background-color: #192328;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: white;
   user-select: none;
-  width: 100%;
-  padding-top: 60px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  justify-items: center;
+  padding: 10px;
 
-  #on-stand-column h3,
-  #deice-requested-column h3 {
-    text-align: center;
-    color: #dfebeb;
-    font-size: 12pt;
-    margin-bottom: 10px;
-    margin-top: 20px;
-    background-color: #242526;
-    padding: 4px;
+  .column-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #on-stand-column,
+  #deice-requested-column {
+    background-color: #273136;
+    flex: 1;
+    overflow: auto;
+    overflow-x: hidden;
     width: 650px;
   }
 
-  @media (max-width: 1300px) {
+  #deice-apron-column {
+    background-color: #273136;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+    width: 650px;
+  }
 
-    #deice-requested-column {
-      order: 1;
-    }
+  #on-stand-column h3,
+  #deice-requested-column h3,
+  #deice-apron-column h3 {
+    text-align: center;
+    color: #dfebeb;
+    font-size: 10pt;
+    font-weight: bold;
+    padding: 4px;
+    width: 100%;
+    background-color: #3e414c;
+    border: 2px solid gray;
+    border-top: 1.4px solid rgb(200, 200, 200);
+    border-bottom: 2px solid rgb(46, 46, 46);
+    overflow-x: hidden;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
 
-    #on-stand-column {
-      order: 2;
+  #deice-apron-column h3 {
+    background-color: #60a1bd;
+    color: black;
+    height: 56px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 1330px) {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100vw;
+    min-height: calc(100vh - 44px);
+
+    #on-stand-column,
+    #deice-requested-column,
+    #deice-apron-column {
+      width: 650px;
+      height: 50%;
     }
   }
+`;
+
+
+export const Title = styled.h4`
+  margin: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 16pt;
 `;
 
 export const AircraftContainer = styled.div`
   display: flex;
   align-items: center;
   padding-left: 8px;
-  margin-top: 10px;
+  margin-top: 8px;
   background-color: #14384c;
   width: 650px;
+
+  border-top: ${({ borderTop }) => borderTop};
+  border-bottom: ${({ borderBottom }) => borderBottom};
+  border-left: ${({ borderLeft }) => borderLeft};
+  border-right: ${({ borderRight }) => borderRight};
+  box-shadow: ${({ boxShadow }) => boxShadow};
 `;
 
 export const Callsign = styled.div`
@@ -85,6 +144,7 @@ export const TreatmentDisplay = styled.div`
   align-items: start;
   font-size: 10pt;
   width: 290px;
+  position: relative;
 `;
 
 export const ManualButton = styled.button`
@@ -123,53 +183,91 @@ export const FunctionButton = styled.button`
   font-weight: bold;
 
   &:hover {
-    background-color: #5a6268;
+    opacity: 0.8 !important;
   }
 `;
 
 export const StandMenu = styled.div`
+  color: black;
+  text-align: left;
   position: absolute;
-  background-color: #242526;
-  border: 1px solid black;
-  padding: 10px;
-  z-index: 10;
-  margin-left: -120px;
-  width: 352px;
+  background: #dedede;
+  border: 2px ridge #7e7e7e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, Helvetica, sans-serif;
+  z-index: 700;
+
+  position: fixed;
+  user-select: none;
+  z-index: 700;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 160px;
 `;
 
 export const TreatmentMenu = styled.div`
+  color: black;
+  text-align: left;
   position: absolute;
-  background-color: #242526;
-  border: 1px solid black;
-  padding: 10px;
-  z-index: 10;
+  background: #dedede;
+  border: 2px ridge #7e7e7e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, Helvetica, sans-serif;
+  z-index: 700;
+
+  position: fixed;
+  user-select: none;
+  z-index: 700;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
 `;
 
+export const MenuTitle = styled.p`
+  color: #000;
+  font-weight: bold;
+  margin: 4px;
+  padding: 0;
+  line-height: 14pt;
+  font-size: 11pt;
+  user-select: none;
+  text-align: center;
+`;
+
+
 export const ConfirmButton = styled.button`
-  background-color: green;
-  color: white;
-  border: none;
-  padding: 10px;
+  border: 2px outset #d7d4cc;
+  color: black;
+  font-weight: bold;
   cursor: pointer;
-  margin-left: 10px;
-  margin-top: 20px;
-  width: 160px;
+  overflow: auto;
+  user-select: none;
+
+  width: 100%;
+  height: 30px;
+  background: #dedede;
 
   &:hover {
-    opacity: 0.8;
+    background-color: #a5a39e;
   }
 `;
 
 export const CloseButton = styled.button`
-  background-color: darkred;
-  color: white;
-  border: none;
-  padding: 10px;
+  border: 2px outset #d7d4cc;
+  color: black;
+  font-weight: bold;
   cursor: pointer;
-  width: 160px;
+  overflow: auto;
+  user-select: none;
+
+  width: 100%;
+  height: 30px;
+  background: #dedede;
 
   &:hover {
-    opacity: 0.8;
+    background-color: #a5a39e;
   }
 `;
 
@@ -190,31 +288,66 @@ export const CompletedMark = styled.p`
 `;
 
 export const EndReportMenu = styled.div`
+  color: black;
+  text-align: left;
+  position: absolute;
+  background: #dedede;
+  border: 2px ridge #7e7e7e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, Helvetica, sans-serif;
+  z-index: 700;
+
   position: fixed;
+  user-select: none;
+  z-index: 700;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #242526;
-  color: white;
-  border: 1px solid black;
-  padding: 20px;
-  width: 500px;
-  text-align: center;
-  z-index: 20;
-
-  h3 {
-    margin-bottom: 15px;
-    font-size: 16pt;
-    color: white;
-  }
-
-  p {
-    margin: 4px 0px;
-    font-size: 11pt;
-    color: black;
-    background-color: white;
-    text-align: left;
-    padding-left: 6px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-  }
+  width: 340px;
 `;
+
+export const getBorderStyles = (requestStatus) => {
+  switch (requestStatus) {
+    case 1:
+      return {
+        borderTop: '4px ridge #f0d520',
+        borderBottom: '4px solid #c6af1a',
+        borderLeft: '12px solid #f0d520',
+        borderRight: '12px solid #f0d520',
+        boxShadow: '0 -1px 0 0 #fffce7, 0 1px 0 0 #000'
+      };
+    case 2:
+    case 3:
+      return {
+        borderTop: '4px ridge #239B56',
+        borderBottom: '4px solid #1D8348',
+        borderLeft: '12px solid #239B56',
+        borderRight: '12px solid #239B56',
+        boxShadow: '0 -1px 0 0 #78A885, 0 1px 0 0 #000'
+      };
+    case 4:
+      return {
+        borderTop: '4px ridge #bb484a',
+        borderBottom: '4px solid #ab4344',
+        borderLeft: '12px solid #ab4344',
+        borderRight: '12px solid #ab4344',
+        boxShadow: '0 -1px 0 0 #ff989a, 0 1px 0 0 #000'
+      };
+    case 5:
+      return {
+        borderTop: '4px ridge #92b4d5',
+        borderBottom: '4px solid #6b91b7',
+        borderLeft: '12px solid #92b4d5',
+        borderRight: '12px solid #92b4d5',
+        boxShadow: '0 -1px 0 0 #ccdbe3, 0 1px 0 0 #000'
+      };
+    default:
+      return {
+        borderTop: '4px ridge #32569f',
+        borderBottom: '4px solid #254075',
+        borderLeft: '12px solid #32569f',
+        borderRight: '12px solid #32569f',
+        boxShadow: '0 -1px 1px 0 #6c9bf9, 0 1px 1px 0 #111'
+      };
+  }
+};

@@ -99,10 +99,15 @@ const Request = ({ stand, ttot, hotStart, requestStatus, callsign, cid, selected
             <AdditionalDataContainer>
               <RequestText>Deicing request:</RequestText>
               {selected !== null && !requestInProgress && !requestApproved && !requestSent && (
-                <RequestButton onClick={handleSendRequest} disabled={isSending}>
-                  {isSending ? 'Sending...' : 'SEND REQUEST'}
-                </RequestButton>
+                callsign === "No VATSIM Connection" ? (
+                  <Value>Connect to VATSIM and file your flight plan first!</Value>
+                ) : (
+                  <RequestButton onClick={handleSendRequest} disabled={isSending}>
+                    {isSending ? 'Sending...' : 'SEND REQUEST'}
+                  </RequestButton>
+                )
               )}
+
               {(requestInProgress || requestApproved) && (
                 <Value>
                   {requestApproved ? (

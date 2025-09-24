@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Navigate, Routes } from 'react-router-dom';
+import { HashRouter as Router, Route, Navigate, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './components/Login';
 import PilotView from './components/PilotView';
 import ATCView from './components/ATCView';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { PROFILE_URL } from '../utils/data';
+import { PROFILE_URL } from './utils/data';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -40,18 +40,17 @@ function App() {
 
   if (loading) {
     return (
-      <h3 style={{
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        margin: 0,
-        color: 'white',
-        textAlign: 'center',
-        background: 'none',
-      }}>
-        Loading...
-      </h3>
+      <div className="loading-screen">
+        <img src="images/snow.svg" alt="Snowflake" className="loading-snowflake" />
+        <h3 className="loading-text">
+          Loading
+          <span className="loading-dots">
+            <span>.</span>
+            <span>.</span>
+            <span>.</span>
+          </span>
+        </h3>
+      </div>
     );
   }
   

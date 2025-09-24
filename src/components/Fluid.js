@@ -115,7 +115,7 @@ const Fluid = ({ selectedTreatment, temperature, precipitation, intensity }) => 
       <Container>
         <IconContainer>
           <img src="images/icon4.svg" alt="fluid" />
-          <Version>FAA<br />2024-2025</Version>
+          <Version>FAA<br />2025-2026</Version>
         </IconContainer>
         <Content>
           <DataContainer>
