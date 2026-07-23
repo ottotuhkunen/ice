@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .App {
   text-align: center;
 }
@@ -175,7 +179,7 @@ code {
 .loading-text {
   color: #e0e0e0;
   margin: 0;
-  font-weight: 200;
+  font-weight: normal;
   font-size: 1.25rem;
   color: #fff;
   letter-spacing: 1px;

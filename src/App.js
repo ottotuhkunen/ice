@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Route, Navigate, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './components/Login';
-import PilotView from './components/PilotView';
+import PilotView from './components/PilotView/index';
 import ATCView from './components/ATCView';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { PROFILE_URL } from './utils/data';

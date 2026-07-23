@@ -1,0 +1,305 @@
+{
+  "type1": {
+    "aluminum": [
+      {
+        "tempRange": { "min": -3, "max": 100 },
+        "weather": {
+          "Active Frost": {
+            "min": "0:45",
+            "max": "0:45",
+            "notes": "During longer Active Frost, outside air temperature (OAT) can vary significantly. The used HOT should correspond to the lowest OAT recorded between the time of fluid application and takeoff."
+          },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:08", "max": "0:13" },
+          "Snow mixed with Freezing Fog": { "min": "0:05", "max": "0:08" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:14", "max": "0:17" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:08", "max": "0:14" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:05", "max": "0:08" },
+          "Freezing Drizzle": { "min": "0:07", "max": "0:10" },
+          "Light Freezing Rain": { "min": "0:02", "max": "0:04" },
+          "Moderate Snow mixed with Rain": { "min": "0:02", "max": "0:02" },
+          "Rain on Cold-Soaked Wing": { "min": "0:02", "max": "0:04" }
+        }
+      },
+      {
+        "tempRange": { "min": -6, "max": -3 },
+        "weather": {
+          "Active Frost": {
+            "min": "0:45",
+            "max": "0:45",
+            "notes": "During longer Active Frost, outside air temperature (OAT) can vary significantly. The used HOT should correspond to the lowest OAT recorded between the time of fluid application and takeoff."
+          },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:06", "max": "0:10" },
+          "Snow mixed with Freezing Fog": { "min": "0:04", "max": "0:06" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:11", "max": "0:13" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:06", "max": "0:11" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:04", "max": "0:06" },
+          "Freezing Drizzle": { "min": "0:04", "max": "0:07" },
+          "Light Freezing Rain": { "min": "0:02", "max": "0:04" }
+        }
+      },
+      {
+        "tempRange": { "min": -10, "max": -6 },
+        "weather": {
+          "Active Frost": {
+            "min": "0:45",
+            "max": "0:45",
+            "notes": "During longer Active Frost, outside air temperature (OAT) can vary significantly. The used HOT should correspond to the lowest OAT recorded between the time of fluid application and takeoff."
+          },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:05", "max": "0:08" },
+          "Snow mixed with Freezing Fog": { "min": "0:03", "max": "0:05" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:08", "max": "0:10" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:05", "max": "0:08" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:03", "max": "0:05" },
+          "Freezing Drizzle": { "min": "0:03", "max": "0:05" },
+          "Light Freezing Rain": { "min": "0:02", "max": "0:04" }
+        }
+      },
+      {
+        "tempRange": { "min": -100, "max": -10 },
+        "weather": {
+          "Active Frost": {
+            "min": "0:45",
+            "max": "0:45",
+            "notes": "During longer Active Frost, outside air temperature (OAT) can vary significantly. The used HOT should correspond to the lowest OAT recorded between the time of fluid application and takeoff."
+          },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:04", "max": "0:07" },
+          "Snow mixed with Freezing Fog": { "min": "0:02", "max": "0:03" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:05", "max": "0:06" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:03", "max": "0:05" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:02", "max": "0:03" }
+        }
+      }
+    ],
+    "composites": [
+      {
+        "tempRange": { "min": -3, "max": 100 },
+        "weather": {
+          "Active Frost": {
+            "min": "0:35",
+            "max": "0:35",
+            "notes": "During longer Active Frost, outside air temperature (OAT) can vary significantly. The used HOT should correspond to the lowest OAT recorded between the time of fluid application and takeoff."
+          },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:07", "max": "0:12" },
+          "Snow mixed with Freezing Fog": { "min": "0:02", "max": "0:05" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:09", "max": "0:11" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:05", "max": "0:09" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:02", "max": "0:05" },
+          "Freezing Drizzle": { "min": "0:06", "max": "0:10" },
+          "Light Freezing Rain": { "min": "0:02", "max": "0:04" },
+          "Moderate Snow mixed with Rain": { "min": "0:01", "max": "0:01" },
+          "Rain on Cold-Soaked Wing": { "min": "0:01", "max": "0:04" }
+        }
+      },
+      {
+        "tempRange": { "min": -6, "max": -3 },
+        "weather": {
+          "Active Frost": {
+            "min": "0:35",
+            "max": "0:35",
+            "notes": "During longer Active Frost, outside air temperature (OAT) can vary significantly. The used HOT should correspond to the lowest OAT recorded between the time of fluid application and takeoff."
+          },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:05", "max": "0:06" },
+          "Snow mixed with Freezing Fog": { "min": "0:02", "max": "0:04" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:08", "max": "0:10" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:04", "max": "0:08" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:02", "max": "0:04" },
+          "Freezing Drizzle": { "min": "0:04", "max": "0:07" },
+          "Light Freezing Rain": { "min": "0:02", "max": "0:04" }
+        }
+      },
+      {
+        "tempRange": { "min": -10, "max": -6 },
+        "weather": {
+          "Active Frost": {
+            "min": "0:35",
+            "max": "0:35",
+            "notes": "During longer Active Frost, outside air temperature (OAT) can vary significantly. The used HOT should correspond to the lowest OAT recorded between the time of fluid application and takeoff."
+          },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:03", "max": "0:06" },
+          "Snow mixed with Freezing Fog": { "min": "0:02", "max": "0:04" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:07", "max": "0:09" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:04", "max": "0:07" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:02", "max": "0:04" },
+          "Freezing Drizzle": { "min": "0:03", "max": "0:05" },
+          "Light Freezing Rain": { "min": "0:02", "max": "0:04" }
+        }
+      },
+      {
+        "tempRange": { "min": -30, "max": -10 },
+        "weather": {
+          "Active Frost": {
+            "min": "0:35",
+            "max": "0:35",
+            "notes": "During longer Active Frost, outside air temperature (OAT) can vary significantly. The used HOT should correspond to the lowest OAT recorded between the time of fluid application and takeoff."
+          },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:03", "max": "0:05" },
+          "Snow mixed with Freezing Fog": { "min": "0:02", "max": "0:03" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:05", "max": "0:06" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:03", "max": "0:05" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:02", "max": "0:03" }
+        }
+      }
+    ]
+  },
+  "type4": {
+    "any": [
+      {
+        "tempRange": { "min": -3, "max": 100 },
+        "weather": {
+          "Active Frost": { "min": "3:00", "max": "3:00" },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": {
+            "min": "1:05",
+            "max": "2:05",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Snow mixed with Freezing Fog": {
+            "min": "0:15",
+            "max": "0:27",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Very Light Snow, Snow Grains or Snow Pellets": {
+            "min": "1:05",
+            "max": "1:16",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Light Snow, Snow Grains or Snow Pellets": {
+            "min": "0:34",
+            "max": "1:05",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Moderate Snow, Snow Grains or Snow Pellets": {
+            "min": "0:19",
+            "max": "0:34",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Freezing Drizzle": {
+            "min": "0:23",
+            "max": "0:38",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Light Freezing Rain": {
+            "min": "0:15",
+            "max": "0:19",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Moderate Snow mixed with Rain": { "min": "—", "max": "—" },
+          "Rain on Cold-Soaked Wing": { "min": "—", "max": "—" }
+        }
+      },
+      {
+        "tempRange": { "min": -8, "max": -3 },
+        "weather": {
+          "Active Frost": { "min": "5:00", "max": "5:00" },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": {
+            "min": "0:30",
+            "max": "1:01",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Snow mixed with Freezing Fog": {
+            "min": "0:30",
+            "max": "0:53",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Very Light Snow, Snow Grains or Snow Pellets": {
+            "min": "2:02",
+            "max": "2:28",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Light Snow, Snow Grains or Snow Pellets": {
+            "min": "1:08",
+            "max": "2:02",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Moderate Snow, Snow Grains or Snow Pellets": {
+            "min": "0:38",
+            "max": "1:08",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Freezing Drizzle": {
+            "min": "0:19",
+            "max": "0:53",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Light Freezing Rain": {
+            "min": "0:19",
+            "max": "0:34",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          }
+        }
+      },
+      {
+        "tempRange": { "min": -14, "max": -8 },
+        "weather": {
+          "Active Frost": { "min": "1:00", "max": "1:00" },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": {
+            "min": "0:30",
+            "max": "1:01",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Snow mixed with Freezing Fog": {
+            "min": "0:27",
+            "max": "0:46",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Very Light Snow, Snow Grains or Snow Pellets": {
+            "min": "1:50",
+            "max": "2:13",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Light Snow, Snow Grains or Snow Pellets": {
+            "min": "1:05",
+            "max": "1:50",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Moderate Snow, Snow Grains or Snow Pellets": {
+            "min": "0:34",
+            "max": "1:05",
+            "notes": "Type 4 Fluid Concentration 100% available on request."
+          },
+          "Freezing Drizzle": {
+            "min": "0:19",
+            "max": "0:53",
+            "notes": "TYPE 4: No holdover time guidelines exist for the selected precipitation below -10°C"
+          },
+          "Light Freezing Rain": {
+            "min": "0:19",
+            "max": "0:34",
+            "notes": "TYPE 4: No holdover time guidelines exist for the selected precipitation below -10°C"
+          }
+        }
+      },
+      {
+        "tempRange": { "min": -18, "max": -14 },
+        "weather": {
+          "Active Frost": { "min": "6:00", "max": "6:00" },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:23", "max": "0:38" },
+          "Snow mixed with Freezing Fog": { "min": "0:04", "max": "0:11" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:57", "max": "1:20" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:15", "max": "0:57" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:05", "max": "0:15" }
+        }
+      },
+      {
+        "tempRange": { "min": -25, "max": -18 },
+        "weather": {
+          "Active Frost": { "min": "4:00", "max": "4:00" },
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:23", "max": "0:38" },
+          "Snow mixed with Freezing Fog": { "min": "0:02", "max": "0:05" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:23", "max": "0:34" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:07", "max": "0:23" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:02", "max": "0:07" }
+        }
+      },
+      {
+        "tempRange": { "min": -100, "max": -25 },
+        "weather": {
+          "Freezing Fog, Freezing Mist, or Ice Crystals": { "min": "0:23", "max": "0:38" },
+          "Snow mixed with Freezing Fog": { "min": "0:01", "max": "0:03" },
+          "Very Light Snow, Snow Grains or Snow Pellets": { "min": "0:15", "max": "0:23" },
+          "Light Snow, Snow Grains or Snow Pellets": { "min": "0:05", "max": "0:15" },
+          "Moderate Snow, Snow Grains or Snow Pellets": { "min": "0:01", "max": "0:05" }
+        }
+      }
+    ]
+  }
+}

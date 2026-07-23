@@ -119,10 +119,10 @@ const Aircraft = ({
               ))}
             </div>
 
-            <p style={{ marginTop: '10px', marginBottom: '8px', textAlign: 'center' }}>
+            <p style={{ margin: '8px', textAlign: 'center', color: '#696969', fontWeight: 'bold', fontSize: '9pt' }}>
                 Do not APPLY before pilot request. The action may trigger an ACARS message.
             </p>
-            
+
             <ConfirmButton
               onClick={() => {
                 saveTreatmentChanges(aircraft.callsign, user.cid);

@@ -191,7 +191,7 @@ export const StandMenu = styled.div`
   color: black;
   text-align: left;
   position: absolute;
-  background: #dedede;
+  background: #bbb;
   border: 2px ridge #7e7e7e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, Helvetica, sans-serif;
@@ -210,7 +210,7 @@ export const TreatmentMenu = styled.div`
   color: black;
   text-align: left;
   position: absolute;
-  background: #dedede;
+  background: #bbb;
   border: 2px ridge #7e7e7e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, Helvetica, sans-serif;
@@ -244,10 +244,10 @@ export const ConfirmButton = styled.button`
   cursor: pointer;
   overflow: auto;
   user-select: none;
-
+    font-size: 0.82rem;
   width: 100%;
   height: 30px;
-  background: #dedede;
+  background: #bbb;
 
   &:hover {
     background-color: #a5a39e;
@@ -261,10 +261,10 @@ export const CloseButton = styled.button`
   cursor: pointer;
   overflow: auto;
   user-select: none;
-
+    font-size: 0.82rem;
   width: 100%;
   height: 30px;
-  background: #dedede;
+  background: #bbb;
 
   &:hover {
     background-color: #a5a39e;
@@ -291,7 +291,7 @@ export const EndReportMenu = styled.div`
   color: black;
   text-align: left;
   position: absolute;
-  background: #dedede;
+  background: #bbb;
   border: 2px ridge #7e7e7e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, Helvetica, sans-serif;

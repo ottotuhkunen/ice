@@ -1,19 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import fluidLimits from '../utils/fluidLimits.json';
+import fluidLimits from '../utils/fluidHoldoverTimes.json';
 import { LOGOUT_URL, AIRCRAFT_DATA_URL, UPDATE_DATA_URL, SET_AREA_URL, GET_AREA_URL, WEBSOCKET_URL } from '../utils/data';
-import {
-  MenuSection, AircraftContainer, Callsign, InfoBlock,
-  TreatmentDisplay, ManualButton, StandMenu, TreatmentMenu,
-  ConfirmButton, FunctionButton, MainSection, CloseButton,
-  StandDisplay, EndReportMenu, CompletedMark, EOBT, Title,
-  MenuTitle
-} from '../styles/ATCViewStyles';
-import {
-  ModalBackground, ModalContent, ModalTitle, ModalButton
-} from './TopMenu';
+import { MenuSection, MainSection, CloseButton, EndReportMenu, MenuTitle } from '../styles/ATCViewStyles';
+import { ModalBackground, ModalContent, ModalTitle, ModalButton } from '../styles/TopMenu';
 import { Helmet } from 'react-helmet';
 import warningSound from '../utils/notification.mp3'; 
 import Aircraft from './ATCAircraft'
+import EFHKDeiceMenu from './ApronSelector';
 
 const treatmentOptions = [
   'No Treatment Requested',
@@ -41,8 +34,9 @@ const endReportTreatment = [
   'Two-step treatment for wings and stabilizers is now complete with Type 4 fluid, Mixture ',
 ];
 
-const endReportDilution = (selectedAircraft) => { 
-  const temp = selectedAircraft.selectedWeather.temperature;
+const METAR_URL = 'https://api.met.no/weatherapi/tafmetar/1.0/metar.txt?icao=EFHK';
+
+const endReportDilution = (selectedAircraft, temp) => {
   if (selectedAircraft.selectedTreatment === 2  || selectedAircraft.selectedTreatment === 3){
     // Fluid Type 1
     if (temp >= 8 ) return '10 percent';
@@ -138,10 +132,45 @@ const ATCView = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [selectedApron, setSelectedApron] = useState("AP6");
+  const [temperature, setTemperature] = useState('');
 
-  console.log(selectedApron);
+    const parseTemperature = (metars) => {
+        const temps = metars
+            .map(metar => {
+                const match = metar.match(/ (M?\d{2})\/(M?\d{2})/);
+                if (!match) return null;
+                const tempStr = match[1];
+                return tempStr.startsWith('M')
+                    ? -parseInt(tempStr.slice(1), 10)
+                    : parseInt(tempStr, 10);
+            })
+            .filter(t => t !== null);
+        if (temps.length === 0) return null;
+        return Math.min(...temps);
+    };
 
-  const treatmentMenuRef = useRef();
+    const fetchMetar = async () => {
+        try {
+            const res = await fetch(METAR_URL);
+            const text = await res.text();
+            const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+            if (!lines.length) return;
+            const latest = lines[lines.length - 1];
+            const prev = lines[lines.length - 2] || latest;
+            const temp = parseTemperature([latest, prev]);
+            setTemperature(temp);
+        } catch (err) {
+            console.error('Failed to fetch METAR:', err);
+        }
+    };
+
+    useEffect(() => {
+        fetchMetar();
+        const interval = setInterval(fetchMetar, 6 * 60 * 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const treatmentMenuRef = useRef();
   const standMenuRef = useRef();
 
   const prevAircraftDataRef = useRef([]);
@@ -395,9 +424,8 @@ const ATCView = ({ user }) => {
           requestBody.ACARSSent = 0;
         } else {
           const reg = aircraftData.find((a) => a.callsign === callsign)?.REG || '';
-          const precipitation = aircraftData.find((a) => a.callsign === callsign)?.selectedWeather.precipitation || '';
-          const intensity = aircraftData.find((a) => a.callsign === callsign)?.selectedWeather.intensity || '';
-          const temperature = aircraftData.find((a) => a.callsign === callsign)?.selectedWeather.temperature || '';
+          const precipitation = '';
+          const intensity = '';
           await sendTelexMessage(callsign, reg, password, precipitation, intensity, temperature);
           requestBody.ACARSSent = 1;
         }
@@ -612,22 +640,18 @@ const ATCView = ({ user }) => {
     <Helmet>
       <meta name="viewport" content="width=device-width, initial-scale=0.6" />
     </Helmet>
-    <div class="overlay">
-      <div class="overlay-text">Preparing for the next season</div>
-    </div>
     <div className="main-container">
       <MenuSection>
         <a href="https://vatsim-scandinavia.org/" target="_blank" rel="noopener noreferrer">
           <img src="images/vatsca.svg" alt="Vatsca" style={{width: '86px', marginTop: '2px'}}/>
         </a>
-        <Title style={{ fontSize: '1rem', fontWeight: '600' }}>
-          EFHK DEICE
-          <select className='apron-selector' value={selectedApron} onChange={(e) => saveSelectedApron(e.target.value)}>
-            <option value="AP6">AP6</option>
-            <option value="AP8">AP8</option>
-          </select>
-        </Title>
-
+          <EFHKDeiceMenu
+              selectedApron={selectedApron}
+              saveSelectedApron={saveSelectedApron}
+              closeMenus={closeMenus}
+              isSending={isSending}
+              user={user}
+          />
 
         {isPasswordFieldVisible && (
           <div className="password-field">
@@ -642,8 +666,8 @@ const ATCView = ({ user }) => {
             <button onClick={handleSavePassword}>Save</button>
           </div>
           )}
-          <div>
-                  
+
+          <div className={"flex items-center"}>
             <a href="https://wiki.vatsim-scandinavia.org/books/special-procedures/page/efhk-de-icing" target="_blank" rel="noopener noreferrer">
               <img style={{ marginRight: '12px', width: '22px' }} src="images/files.svg" alt="Files" />
             </a>
@@ -767,7 +791,7 @@ const ATCView = ({ user }) => {
               {selectedAircraft.REG && ` (or ${selectedAircraft.REG}) `} 
               on stand {selectedAircraft.stand || 'N/A'}
             </p>
-            <p>{endReportTreatment[selectedAircraft.selectedTreatment]} {endReportDilution(selectedAircraft)}</p>
+            <p>{endReportTreatment[selectedAircraft.selectedTreatment]} {endReportDilution(selectedAircraft, temperature)}</p>
             <p>
               Holdover time started at{" "}
               {selectedAircraft.HOTStartTime ? (
@@ -788,7 +812,8 @@ const ATCView = ({ user }) => {
               )}{" "}
               local time
             </p>
-            <p>Post de- and anti-icing checks complete</p>
+            <p>Post de- and anti-icing checks completed</p><
+              p>Personnel and equipment clear of aircraft</p>
           </div>
 
           <CloseButton onClick={closeEndReportMenu}>Close</CloseButton>
@@ -815,3 +840,11 @@ const ATCView = ({ user }) => {
 };
 
 export default ATCView;
+
+/*
+    <div class="overlay">
+      <div class="overlay-text">Preparing for the next season</div>
+    </div>
+
+    Below Helmet
+ */
