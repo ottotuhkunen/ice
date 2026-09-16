@@ -4,15 +4,12 @@ export const MenuSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
-  background-color: #242526;
   color: #dfebeb;
   user-select: none;
-  position: fixed;
+  position: absolute;
   width: 100%;
-  height: 42px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
-  padding: 8px;
+  height: 40px;
+  padding: 0px 8px;
   z-index: 10;
 
   img {
@@ -99,7 +96,6 @@ export const MainSection = styled.div`
     #deice-requested-column,
     #deice-apron-column {
       width: 650px;
-      height: 50%;
     }
   }
 `;
@@ -116,8 +112,11 @@ export const AircraftContainer = styled.div`
   align-items: center;
   padding-left: 8px;
   margin-top: 8px;
-  background-color: #14384c;
+  background-color: whitesmoke;
+  color: black;
   width: 650px;
+  font-weight: bold;
+  font-family: sans-serif;
 
   border-top: ${({ borderTop }) => borderTop};
   border-bottom: ${({ borderBottom }) => borderBottom};
@@ -150,15 +149,15 @@ export const TreatmentDisplay = styled.div`
 export const ManualButton = styled.button`
   margin-top: 4px;
   padding: 4px;
-  font-size: 9pt;
-  background-color: #6c757d;
-  color: #fff;
-  border: none;
+  font-size: 10px;
+  background-color: #a2a9b0;
+  color: black;
+  border: 1.5px outset black;
   cursor: pointer;
   min-width: 130px;
 
   &:hover {
-    background-color: #5a6268;
+    background-color: #9299a1;
   }
 `;
 
@@ -172,15 +171,17 @@ export const StandDisplay = styled.div`
 `;
 
 export const FunctionButton = styled.button`
-  background-color: #6c757d;
-  color: white;
+  background-color: #a2a9b0;
+  color: black;
   border: none;
-  font-size: 8pt;
+  font-size: 12px;
   cursor: pointer;
   width:80px;
-  height: 70px;
+  height: 56px;
   padding: 0;
+  margin: 2px;
   font-weight: bold;
+  border: 1.5px outset gray;
 
   &:hover {
     opacity: 0.8 !important;
@@ -272,12 +273,14 @@ export const CloseButton = styled.button`
 `;
 
 export const EOBT = styled.p`
-  color: silver;
-  font-size: 9pt;
+  font-size: 10px;
   margin: 0;
   position: absolute;
-  margin-left: 150px;
-  margin-top: 30px;
+  right: 20px;
+  bottom:0;
+  border: 1px inset black;
+  color: gray;
+  padding: 1px 2px;
 `;
 
 export const CompletedMark = styled.p`

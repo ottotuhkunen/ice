@@ -20,7 +20,7 @@ const steps = [
             { type: "pilot", text: "HELSINKI DE-ICING, FINNAIR 1, REQUEST ONE STEP DEICING FOR WINGS AND STABILIZER" },
             { type: "atc", text: "FINNAIR 1, ROGER, DE-ICING ON REMOTE APRON 6" },
         ],
-        note: "Normally Type 4 fluid is selected only in snowy conditions or whenever Type 1 Fluid holdover time (HOT) is not enough",
+        note: "Normally Type 4 fluid is selected only in snowy conditions or whenever Type 1 Fluid holdover time (HOT) is not enough.",
     },
     {
         number: 4,

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
     TreatmentMenu,
     MenuTitle,
@@ -15,10 +15,27 @@ function EFHKDeiceMenu({
                            user,
                        }) {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [currentTime, setCurrentTime] = useState('');
     const apronMenuRef = useRef(null);
 
     const apronOptions = ['AP6', 'AP8'];
     const [pendingApron, setPendingApron] = useState(selectedApron);
+
+    // Update UTC time every second
+    useEffect(() => {
+        const updateTime = () => {
+            const now = new Date();
+            const hours = String(now.getUTCHours()).padStart(2, '0');
+            const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+            setCurrentTime(`${hours}:${minutes}:${seconds}`);
+        };
+
+        updateTime(); // set immediately on mount
+        const timer = setInterval(updateTime, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
 
     const handleSelect = (value) => {
         setPendingApron(value); // only mark selection locally
@@ -32,14 +49,18 @@ function EFHKDeiceMenu({
 
     return (
         <>
-            <Title style={{ fontSize: '1rem', fontWeight: '600' }}>
-                EFHK DEICE{' '}
-                <span
+            <Title className="!text-xs font-bold !font-sans pl-1 flex items-center">
+                <span className="inline-block !w-28 text-left">UTC {currentTime}</span>
+                <span>REMOTE</span>
+                <button
                     onClick={() => setMenuOpen((prev) => !prev)}
-                    style={{ cursor: 'pointer', textDecoration: 'underline', color: 'orange' }}
+                    className="text-blue-500 underline ml-1"
                 >
-          {selectedApron}
-        </span>
+                    {selectedApron}
+                </button>
+                <span className="ml-8">Roles</span>
+                <span className="ml-1.5">DEICE</span>
+
             </Title>
 
             {menuOpen && (
@@ -50,7 +71,7 @@ function EFHKDeiceMenu({
                         {apronOptions.map((apron, index) => (
                             <div key={index}>
                                 <div
-                                    onClick ={() => handleSelect(apron)}
+                                    onClick={() => handleSelect(apron)}
                                     className="atc-treatment-menu-content"
                                     style={{
                                         backgroundColor:

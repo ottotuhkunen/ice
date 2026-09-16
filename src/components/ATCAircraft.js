@@ -44,20 +44,22 @@ const Aircraft = ({
 
   return (
     <AircraftContainer key={aircraft.callsign} {...borderStyles}>
-      <Callsign style={{ color: aircraft.lat === 60.30323 ? 'gray' : 'inherit' }}>
+      <Callsign className="leading-tight" style={{ color: aircraft.lat === 60.30323 ? 'gray' : 'black' }}>
         {aircraft.callsign}
         <InfoBlock>
-          <p style={{ fontSize: '9pt', color: 'silver', marginBottom: '0' }}>{aircraft.ATYP}</p>
+          <p className="text-xs m-0 leading-tight font-bold text-[#808080]">{aircraft.ATYP}</p>
           {!minimizedLabel && (
-            <p style={{ fontSize: '9pt', color: 'silver', marginBottom: '0' }}>{aircraft.REG}</p>
+            <p className="text-xs m-0 font-bold text-[#808080]">{aircraft.REG}</p>
           )}
         </InfoBlock>
       </Callsign>
 
       <TreatmentDisplay>
-        <span style={{ color: aircraft.requestStatus > 1 ? '#32d74b' : '#ccc' }}>
-          {treatmentOptions[aircraft.selectedTreatment]}
-        </span>
+        {!minimizedLabel && (
+          <span className="uppercase text-xs" style={{ color: aircraft.requestStatus > 1 ? 'black' : 'gray' }}>
+            {treatmentOptions[aircraft.selectedTreatment]}
+          </span>
+        )}
         <ManualButton
           onClick={() =>
             setActiveTreatmentMenu(
@@ -65,8 +67,9 @@ const Aircraft = ({
             )
           }
         >
-          Manual Selection
+          TREATMENT
         </ManualButton>
+
         <EOBT>EOBT {aircraft.EOBT}</EOBT>
 
         {showACARS && (
@@ -138,28 +141,32 @@ const Aircraft = ({
       </TreatmentDisplay>
 
       <StandDisplay>
-        {aircraft.requestStatus >= 3 ? (
-          aircraft.stand !== '' ? (
-            <span style={{ backgroundColor: 'green', fontWeight: 'bold', color: 'white', padding: '0px 4px' }}>
-              {aircraft.stand}
-            </span>
+        {!minimizedLabel && (
+            <>
+              {aircraft.requestStatus >= 3 ? (
+                aircraft.stand !== '' ? (
+                    <span className="uppercase text-xs" style={{ backgroundColor: 'green', fontWeight: 'bold', color: 'white', padding: '0px 4px' }}>
+                      {aircraft.stand}
+                    </span>
           ) : (
-            <span style={{ backgroundColor: 'darkred', fontWeight: 'bold', color: 'white', padding: '0px 4px'}}>
-              NIL
-            </span>
-          )
-        ) : (
-          aircraft.stand !== '' ? aircraft.stand : 'NIL'
+              <span className="uppercase text-xs" style={{ backgroundColor: 'darkred', fontWeight: 'bold', color: 'white', padding: '0px 4px'}}>
+                NIL
+              </span>
+                  )
+              ) : (
+                  aircraft.stand !== '' ? <span className="uppercase text-xs">{aircraft.stand}</span> : <span className="uppercase text-xs">NIL</span>
+              )}
+              <ManualButton
+                  onClick={() =>
+                      setActiveStandMenu(
+                          activeStandMenu === aircraft.callsign ? null : aircraft.callsign
+                      )
+                  }
+              >
+                DEICE STAND
+              </ManualButton>
+            </>
         )}
-        <ManualButton
-          onClick={() =>
-            setActiveStandMenu(
-              activeStandMenu === aircraft.callsign ? null : aircraft.callsign
-            )
-          }
-        >
-          Select Stand
-        </ManualButton>
         {activeStandMenu === aircraft.callsign && (
           <StandMenu ref={standMenuRef}>
             <MenuTitle style={{ fontWeight: 'bold' }}>{aircraft.callsign}<br/>DEICE STAND</MenuTitle>
@@ -212,7 +219,7 @@ const Aircraft = ({
                 : aircraft.requestStatus === 3
                 ? 'green'
                 : aircraft.requestStatus === 4
-                ? 'darkred'
+                ? 'red'
                 : '',
             pointerEvents: aircraft.requestStatus === 0 ? 'none' : 'auto',
             }}
@@ -226,13 +233,13 @@ const Aircraft = ({
                 case 1:
                 return <>CONFIRM<br />REQUEST</>;
                 case 2:
-                return <>TAXI TO<br />{aircraft.stand || 'NIL'}</>;
+                return <>TAXI {aircraft.stand || 'NIL'}</>;
                 case 3:
                 return <>START<br />DEICE</>;
                 case 4:
-                return <>MARK AS<br />COMPLETED</>;
+                return <>END<br />DEICE</>;
                 case 5:
-                return <>VIEW<br />END REPORT</>;
+                return <>VIEW REPORT</>;
                 default:
                 return 'NIL';
             }

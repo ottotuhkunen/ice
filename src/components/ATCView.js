@@ -641,10 +641,7 @@ const ATCView = ({ user }) => {
       <meta name="viewport" content="width=device-width, initial-scale=0.6" />
     </Helmet>
     <div className="main-container">
-      <MenuSection>
-        <a href="https://vatsim-scandinavia.org/" target="_blank" rel="noopener noreferrer">
-          <img src="images/vatsca.svg" alt="Vatsca" style={{width: '86px', marginTop: '2px'}}/>
-        </a>
+      <MenuSection className="bg-neutral-900">
           <EFHKDeiceMenu
               selectedApron={selectedApron}
               saveSelectedApron={saveSelectedApron}
@@ -668,9 +665,6 @@ const ATCView = ({ user }) => {
           )}
 
           <div className={"flex items-center"}>
-            <a href="https://wiki.vatsim-scandinavia.org/books/special-procedures/page/efhk-de-icing" target="_blank" rel="noopener noreferrer">
-              <img style={{ marginRight: '12px', width: '22px' }} src="images/files.svg" alt="Files" />
-            </a>
             <img
               src={audioEnabled ? 'images/speaker-on.svg' : 'images/speaker-off.svg'}
               alt="Audio"
@@ -688,7 +682,7 @@ const ATCView = ({ user }) => {
       </MenuSection>
 
       <MainSection>
-        <div className="column-group">
+        <div className="column-group flex-1">
           <div id="on-stand-column">
             <h3>ON STAND / NO REQUEST</h3>
             {onStandAircraft.map((aircraft) => (
@@ -743,17 +737,18 @@ const ATCView = ({ user }) => {
             ))}
           </div>
         </div>
+        <div className="column-group flex-1 max-h-56 xl:max-h-full">
         <div id="deice-apron-column">
           <h3 className='deice-apron-title'>
             <img src='images/slippery.png'></img>
             <div>
-              <p style={{margin: 0}}>REMOTE DE-ICING | {selectedApron}</p>
-              <p style={{fontWeight: 'normal', fontSize: '9pt', margin: 0}}>De-icing Operator on 121.675</p>
-              <p style={{fontWeight: 'normal', fontSize: '9pt', margin: 0}}>
+              <p className="m-0">REMOTE DE-ICING | {selectedApron}</p>
+              <p className="text-[10px] m-0 pt-0.5 font-bold uppercase">De-icing Operator on 121.675</p>
+              <p className="text-[10px] m-0 uppercase">
                 {selectedApron === 'AP6' ? 'Proceed via GC1 or DC1' : 'Proceed via AV1 or VS1'}
               </p>
             </div>
-            <div>133.850</div>
+            <div className="flex items-end">133.850</div>
           </h3>
           {deiceApronAircraft.map((aircraft) => (
             <Aircraft
@@ -780,6 +775,7 @@ const ATCView = ({ user }) => {
             />
           ))}
         </div>
+        </div>
       </MainSection>
 
       {endReportMenuOpen && selectedAircraft && (
@@ -792,26 +788,28 @@ const ATCView = ({ user }) => {
               on stand {selectedAircraft.stand || 'N/A'}
             </p>
             <p>{endReportTreatment[selectedAircraft.selectedTreatment]} {endReportDilution(selectedAircraft, temperature)}</p>
-            <p>
-              Holdover time started at{" "}
-              {selectedAircraft.HOTStartTime ? (
-                new Date(
-                  Date.UTC(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    new Date().getDate(),
-                    ...selectedAircraft.HOTStartTime.split(":").map(Number)
-                  )
-                ).toLocaleTimeString("en-GB", {
-                  timeZone: "Europe/Helsinki",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              ) : (
-                "N/A"
-              )}{" "}
-              local time
-            </p>
+            {selectedAircraft.selectedTreatment !== 1 && (
+                <p>
+                  Holdover time started at{" "}
+                  {selectedAircraft.HOTStartTime ? (
+                      new Date(
+                          Date.UTC(
+                              new Date().getFullYear(),
+                              new Date().getMonth(),
+                              new Date().getDate(),
+                              ...selectedAircraft.HOTStartTime.split(":").map(Number)
+                          )
+                      ).toLocaleTimeString("en-GB", {
+                        timeZone: "Europe/Helsinki",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                  ) : (
+                      "N/A"
+                  )}{" "}
+                  local time
+                </p>
+            )}
             <p>Post de- and anti-icing checks completed</p><
               p>Personnel and equipment clear of aircraft</p>
           </div>
