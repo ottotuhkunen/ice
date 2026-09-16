@@ -56,13 +56,13 @@ const PilotView = ({ user }) => {
     }, [user]);
 
     return (
-        <>
+        <div className="bg-neutral-950 flex flex-col items-center">
             <Menu callsign={callsign} />
-            <div className="mt-14 flex p-2 pb-0 bg-neutral-950 text-white items-stretch">
+            <div className="max-w-4xl w-full mt-14 flex p-2 pb-0 text-white items-stretch">
                 <IconContainer iconName={'pin'}/>
                 <LocationSection/>
             </div>
-            <div className="flex p-2 pb-0 bg-neutral-950 text-white items-stretch">
+            <div className="max-w-4xl w-full flex p-2 pb-0 text-white items-stretch">
                 <IconContainer iconName={'rain'}/>
                 <WeatherSection
                     temperature={temperature}
@@ -72,7 +72,7 @@ const PilotView = ({ user }) => {
                     requestStatus={requestStatus}
                 />
             </div>
-            <div className="flex p-2 pb-0 bg-neutral-950 text-white items-stretch">
+            <div className="max-w-4xl w-full flex p-2 pb-0 text-white items-stretch">
                 <IconContainer iconName={'truck'}/>
                 <OrderSection stand={stand} ttot={ttot} hotStart={hotStart} requestStatus={requestStatus}
                               callsign={callsign} cid={user.cid} selectedTreatment={selectedTreatment}
@@ -80,30 +80,30 @@ const PilotView = ({ user }) => {
             </div>
 
             {userTreatment !== 0 && userTreatment !== null &&
-                <div className="flex p-2 pb-0 bg-neutral-950 text-white items-stretch">
+                <div className="max-w-4xl w-full flex p-2 pb-0 text-white items-stretch">
                     <IconContainer iconName={'flask'}/>
                     <FluidSection selectedTreatment={userTreatment + 1} requestStatus={requestStatus} hotStart={hotStart} temperature={temperature} precipitation={precipitation} onHotCalculated={(value) => setHot(value)} />
                 </div>
             }
 
             {userTreatment !== 0 && userTreatment !== null &&
-                <div className="flex p-2 pb-0 bg-neutral-950 text-white items-stretch">
+                <div className="max-w-4xl w-full flex p-2 pb-0 text-white items-stretch">
                     <IconContainer iconName={'timer'}/>
                     <TimerSection holdoverTime={hot}/>
                 </div>
             }
 
-            <div className="flex p-2 pb-0 bg-neutral-950 text-white items-stretch">
+            <div className="max-w-4xl w-full flex p-2 pb-0 text-white items-stretch">
                 <IconContainer iconName={'notes'}/>
                 <NotesSection/>
             </div>
-            <div className="flex p-2 bg-neutral-950 text-white items-stretch">
+            <div className="max-w-4xl w-full flex p-2 text-white items-stretch">
                 <IconContainer iconName={'info'}/>
                 <ProceduresSection/>
             </div>
 
             <DeiceVGS requestStatus={requestStatus} />
-        </>
+        </div>
     );
 };
 

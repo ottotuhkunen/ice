@@ -60,11 +60,11 @@ const ProceduresSection = () => {
     return (
         <div className="bg-zinc-900 rounded-lg p-4 flex-1 text-gray-300 space-y-6">
 
-            <div className="space-y-4 text-sm">
+            <div className="space-y-3 text-sm">
                 {steps.map((step) => (
-                    <div key={step.number} className="bg-neutral-900 p-4 rounded-lg border-1 border-neutral-500">
+                    <div key={step.number} className="bg-neutral-900/50 p-3 rounded-lg border-1 border-neutral-700">
                         <div className="flex items-center mb-2">
-                            <div className="font-bold w-7 h-7 flex items-center justify-center bg-zinc-700 text-white rounded-full mr-3">
+                            <div className="font-bold w-7 h-7 flex items-center justify-center bg-zinc-700 text-gray-300 rounded-full mr-3">
                                 {step.number}
                             </div>
                             <h3 className="text-lg mt-2 font-semibold">{step.title}</h3>
@@ -72,11 +72,11 @@ const ProceduresSection = () => {
 
                         <ul className="list-disc list-inside space-y-2 ml-2">
                             {step.details.map((item, idx) => {
-                                if (typeof item === "string") return <li key={idx}>{item}</li>;
+                                if (typeof item === "string") return <p key={idx}>{item}</p>;
                                 return (
                                     <li
                                         key={idx}
-                                        className={`flex items-start font-semibold text-sm space-x-3 ${item.type === "pilot" ? "text-blue-500" : "text-green-700"}`}
+                                        className={`flex items-start font-semibold text-xs space-x-3 ${item.type === "pilot" ? "text-blue-500" : "text-green-700"}`}
                                     >
                                         {item.type === "pilot" ? <FaUser className="mt-1 flex-shrink-0" /> : <FaHeadset className="mt-1 flex-shrink-0" />}
                                         <span>{item.text}</span>

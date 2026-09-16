@@ -23,7 +23,7 @@ const Menu = ({ callsign }) => {
     };
 
     return (
-        <div className="fixed top-0 left-0 w-full h-14 bg-gradient-to-r from-gray-900 to-slate-900 text-white flex items-center justify-between px-[14px] shadow-lg backdrop-blur-md border-b border-gray-700 z-50 transition-all duration-300">
+        <div className="fixed top-0 left-0 w-full h-14 bg-zinc-950 text-white flex items-center justify-between px-[14px] shadow-lg backdrop-blur-md border-b border-neutral-800 drop-shadow-lg z-50 transition-all duration-300">
 
             {/* Left Section */}
             <div className="flex items-center gap-3">

@@ -39,7 +39,7 @@ const NotesSection = () => {
         },
         second: {
             title: "Remote Apron 8",
-            image: "/images/apn8.png"
+            image: "/images/apn8.jpg"
         }
     };
 
@@ -89,8 +89,14 @@ const NotesSection = () => {
 
             {/* Popup Modal */}
             {openModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 select-none">
-                    <div className="bg-zinc-900 p-6 rounded-lg max-w-[90vw] w-[800px] space-y-4 relative max-h-[90vh] overflow-y-auto text-white">
+                <div
+                    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 select-none"
+                    onClick={() => setOpenModal(null)} /* <-- Closes when clicking the backdrop */
+                >
+                    <div
+                        className="bg-zinc-900 p-6 rounded-lg max-w-[90vw] w-[800px] space-y-4 relative max-h-[90vh] overflow-y-auto text-white"
+                        onClick={(e) => e.stopPropagation()} /* <-- Prevents closing when clicking inside the modal box */
+                    >
                         <h2 className="font-bold text-lg">
                             {modals[openModal].title}
                         </h2>

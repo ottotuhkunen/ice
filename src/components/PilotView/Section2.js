@@ -273,7 +273,7 @@ const WeatherSection = ({ temperature, precipitation, setTemperature, setPrecipi
             {/* Edit Modal */}
             {editing && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 select-none">
-                    <div className="bg-zinc-900 p-6 rounded-lg w-96 space-y-4 relative max-h-[90vh] overflow-y-auto">
+                    <div className="bg-zinc-900 p-6 rounded-lg max-w-xl space-y-4 relative max-h-[90vh] overflow-y-auto">
                         <h2 className="text-white font-bold text-lg">Manual Weather</h2>
 
                         <div className="flex flex-col gap-2">

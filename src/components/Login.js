@@ -125,7 +125,7 @@ const Login = () => {
                     De‑icing decision support powered by real‑world operations of <a target="_blank" rel="noopener noreferrer" className="text-blue-300" href="https://surewx.com/en">SureWx</a>.
                 </p>
 
-                <SureWx className="max-w-40 w-full mb-3"/>
+                <SureWx className="max-w-40 w-full mb-3 shrink-0"/>
 
                 <p className="text-sm text-center">For flight simulation use only</p>
 
